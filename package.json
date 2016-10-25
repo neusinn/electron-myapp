@@ -1,0 +1,19 @@
+{
+  "name": "electron-myapp",
+  "version": "1.0.0",
+  "description": "electron step-by-step example",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "electron",
+    "mva",
+    "tutorial"
+  ],
+  "author": "markkus.vonallmen@swisscom.com",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.4.4"
+  }
+}
