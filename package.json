@@ -14,6 +14,7 @@
   "author": "markkus.vonallmen@swisscom.com",
   "license": "ISC",
   "devDependencies": {
+    "devtron": "^1.4.0",
     "electron": "^1.4.4"
   }
 }
