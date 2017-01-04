@@ -6,9 +6,14 @@ const {app, BrowserWindow, Tray} = require('electron');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let tray;
+let workArea;
 
 function createWindow () {
 
+    let screen = require('electron').screen;
+    workArea = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+    console.log("WorkArea x:" +  workArea.x + ", y:" +  workArea.y );
+    console.log("WorkArea width:" +  workArea.width + ", height:" +  workArea.height );
 
     tray = new Tray(`${__dirname}/resources/electorn-logo.png`);
     let trayBounds = tray.getBounds();
@@ -20,6 +25,9 @@ function createWindow () {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        x: workArea.width - 800,
+        y: workArea.height - 600
+        //center: true
         //acceptFirstMouse: true
 
     });
@@ -27,11 +35,6 @@ function createWindow () {
     console.log("BrowserWindow Position:" +  mainWindow.getPosition());
     console.log("BrowserWindow WindowSize:" +  mainWindow.getSize());
     console.log("BrowserWindow ContentSize:" +  mainWindow.getContentSize());
-
-    let screen = require('electron').screen;
-    let workArea = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
-    console.log("WorkArea x:" +  workArea.x + ", y:" +  workArea.y );
-    console.log("WorkArea width:" +  workArea.width + ", height:" +  workArea.height );
 
 
     // and load the index.html of the app
