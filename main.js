@@ -11,7 +11,7 @@ function createWindow () {
 
 
     tray = new Tray(`${__dirname}/resources/electorn-logo.png`);
-    var trayBounds = tray.getBounds();
+    let trayBounds = tray.getBounds();
     console.log("Tray bounds x:" +  trayBounds.x + ", y:" +  trayBounds.y );
     console.log("Tray bounds width:" +  trayBounds.width + ", height:" +  trayBounds.height );
 
@@ -27,6 +27,12 @@ function createWindow () {
     console.log("BrowserWindow Position:" +  mainWindow.getPosition());
     console.log("BrowserWindow WindowSize:" +  mainWindow.getSize());
     console.log("BrowserWindow ContentSize:" +  mainWindow.getContentSize());
+
+    let screen = require('electron').screen;
+    let workArea = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+    console.log("WorkArea x:" +  workArea.x + ", y:" +  workArea.y );
+    console.log("WorkArea width:" +  workArea.width + ", height:" +  workArea.height );
+
 
     // and load the index.html of the app
     mainWindow.loadURL(`file://${__dirname}/app/index.html`);
