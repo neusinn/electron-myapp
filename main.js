@@ -38,23 +38,23 @@ function createWindow () {
 
     if (trayBounds.x < t && trayBounds.y > t) {
         console.log("Tray is left");
-        pos.x = workArea.x;
-        pos.y = workArea.y + workArea.height - pos.height;
+        pos.x = pos.left;
+        pos.y = pos.bottom;
     }
     if (trayBounds.x > t && trayBounds.y > t) {
         console.log("Tray is bottom");
-        pos.x = workArea.x + workArea.width - pos.width;
-        pos.y = workArea.y + workArea.height - pos.height;
+        pos.x = pos.right;
+        pos.y = pos.bottom;
     }
     if (trayBounds.x > t && trayBounds.y < t) {
         console.log("Tray is right");
-        pos.x = workArea.x + workArea.width - pos.width;
-        pos.y = workArea.y + workArea.height - pos.height;
+        pos.x = pos.right;
+        pos.y = pos.bottom;
     }
     if (trayBounds.x > t && trayBounds.y < t) {
         console.log("Tray is top");
-        pos.x = workArea.x + workArea.width - pos.width;
-        pos.y = workArea.y;
+        pos.x = pos.right;
+        pos.y = pos.top;
     }
     console.log("Window position:" +  JSON.stringify(pos));
 
