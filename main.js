@@ -1,24 +1,29 @@
 // Module to control application life.
 // Module to create native browser window.
 const {app, BrowserWindow, Tray} = require('electron');
+const electron = require('electron');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let tray;
-let workArea;
+
 
 function createWindow () {
 
-    let screen = require('electron').screen;
-    workArea = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
-    console.log("WorkArea x:" +  workArea.x + ", y:" +  workArea.y );
-    console.log("WorkArea width:" +  workArea.width + ", height:" +  workArea.height );
+    // get Display: a) Primary Display; b) Display near to cursor
+    let cursor = electron.screen.getCursorScreenPoint();
+    console.log("Cursor:" + JSON.stringify(cursor));
+
+    //let display = electron.screen.getDisplayNearestPoint(cursor);
+    let display = electron.screen.getPrimaryDisplay();
+
+    let workArea = display.workArea;
+    console.log("WorkArea:" + JSON.stringify(workArea));
 
     tray = new Tray(`${__dirname}/resources/electorn-logo.png`);
     let trayBounds = tray.getBounds();
-    console.log("Tray bounds x:" +  trayBounds.x + ", y:" +  trayBounds.y );
-    console.log("Tray bounds width:" +  trayBounds.width + ", height:" +  trayBounds.height );
+    console.log("Tray bounds:" +  JSON.stringify(trayBounds));
 
 
     // Create the browser window.
