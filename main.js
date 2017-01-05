@@ -6,7 +6,11 @@ const electron = require('electron');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let mainWindowPos = {};
 let tray;
+
+// Don't show the app in the doc
+app.dock.hide();
 
 function calculateWindowPosition(width, height, tray) {
     // get Display: a) Primary Display; b) Display near to cursor
@@ -57,18 +61,32 @@ function calculateWindowPosition(width, height, tray) {
 }
 function createTray() {
     tray = new Tray(`${__dirname}/resources/electorn-logo.png`);
+    tray.on('right-click', toggleWindow);
+    tray.on('double-click', toggleWindow);
+    tray.on('click', function (event) {
+        toggleWindow();
+
+        // Show devtools when command clicked
+        if (mainWindow.isVisible() && process.defaultApp && event.metaKey) {
+            mainWindow.openDevTools({mode: 'detach'})
+        }
+    })
 }
 
-function createWindow (pos) {
+function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: pos.width,
-        height: pos.height,
-        x: pos.x,
-        y: pos.y
+        width: mainWindowPos.width,
+        height: mainWindowPos.height,
+        x: mainWindowPos.x,
+        y: mainWindowPos.y,
+        show: false,
+        frame: false,
+        fullscreenable: false,
+        resizable: false,
+        transparent: false
         //center: true
         //acceptFirstMouse: true
-
     });
 
     console.log("BrowserWindow Position:" +  mainWindow.getPosition());
@@ -78,7 +96,6 @@ function createWindow (pos) {
 
     // and load the index.html of the app
     mainWindow.loadURL(`file://${__dirname}/app/index.html`);
-    mainWindow.webContents.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -89,6 +106,20 @@ function createWindow (pos) {
     })
 }
 
+function toggleWindow() {
+    if (mainWindow.isVisible()) {
+        mainWindow.hide();
+    } else {
+        showWindow();
+    }
+}
+
+function showWindow() {
+    mainWindow.setPosition(mainWindowPos.x, mainWindowPos.y, false);
+    mainWindow.show();
+    mainWindow.focus();
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -97,7 +128,8 @@ app.on('ready', () => {
   console.log("Cursor:" + JSON.stringify(cursor));
 
   createTray();
-  createWindow( calculateWindowPosition(800, 600, tray));
+  mainWindowPos = calculateWindowPosition(800, 600, tray);
+  createWindow(mainWindowPos);
 });
 
 // Quit when all windows are closed.
@@ -113,6 +145,6 @@ app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        createWindow();
+        createWindow(windowPos);
     }
 });
