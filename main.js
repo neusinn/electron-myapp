@@ -26,12 +26,47 @@ function createWindow () {
     console.log("Tray bounds:" +  JSON.stringify(trayBounds));
 
 
+    let pos = {};
+    pos.width = 800;
+    pos.height = 600;
+
+    let t = 100; // Assume tray size max 100
+    pos.top = workArea.y;
+    pos.bottom = workArea.y + workArea.height - pos.height;
+    pos.left = workArea.x;
+    pos.right = workArea.x + workArea.width - pos.width;
+
+    if (trayBounds.x < t && trayBounds.y > t) {
+        console.log("Tray is left");
+        pos.x = workArea.x;
+        pos.y = workArea.y + workArea.height - pos.height;
+    }
+    if (trayBounds.x > t && trayBounds.y > t) {
+        console.log("Tray is bottom");
+        pos.x = workArea.x + workArea.width - pos.width;
+        pos.y = workArea.y + workArea.height - pos.height;
+    }
+    if (trayBounds.x > t && trayBounds.y < t) {
+        console.log("Tray is right");
+        pos.x = workArea.x + workArea.width - pos.width;
+        pos.y = workArea.y + workArea.height - pos.height;
+    }
+    if (trayBounds.x > t && trayBounds.y < t) {
+        console.log("Tray is top");
+        pos.x = workArea.x + workArea.width - pos.width;
+        pos.y = workArea.y;
+    }
+    console.log("Window position:" +  JSON.stringify(pos));
+
+
+
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        x: workArea.width - 800,
-        y: workArea.height - 600
+        width: pos.width,
+        height: pos.height,
+        x: pos.x,
+        y: pos.y
         //center: true
         //acceptFirstMouse: true
 
