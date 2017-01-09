@@ -10,17 +10,18 @@ let mainWindowPos = {};
 let tray;
 
 // Don't show the app in the doc
-app.dock.hide();
+//app.dock.hide();
 
 function calculateWindowPosition(width, height, tray) {
     // get Display: a) Primary Display; b) Display near to cursor
     //let display = electron.screen.getDisplayNearestPoint(cursor);
     let display = electron.screen.getPrimaryDisplay();
-
+    let screen = display.size;
     let workArea = display.workArea;
-    console.log("WorkArea:" + JSON.stringify(workArea));
-
     let trayBounds = tray.getBounds();
+
+    console.log("Screen:" + JSON.stringify(screen));
+    console.log("WorkArea:" + JSON.stringify(workArea));
     console.log("Tray bounds:" +  JSON.stringify(trayBounds));
 
 
@@ -29,36 +30,40 @@ function calculateWindowPosition(width, height, tray) {
     pos.width = width;
     pos.height = height;
 
-    let t = 100; // Assume tray size max 100
+    let t = 200; // Assume tray size max 100
     pos.top = workArea.y;
     pos.bottom = workArea.y + workArea.height - pos.height;
     pos.left = workArea.x;
     pos.right = workArea.x + workArea.width - pos.width;
 
-    if (trayBounds.x < t && trayBounds.y > t) {
+    if (trayBounds.x < t ) {
         console.log("Tray is left");
         pos.x = pos.left;
         pos.y = pos.bottom;
-    }
-    if (trayBounds.x > t && trayBounds.y > t) {
+    } else if (trayBounds.y < t) {
+        console.log("Tray is top");
+        pos.x = pos.right;
+        pos.y = pos.top;
+    } else if (screen.height - trayBounds.y < t) {
         console.log("Tray is bottom");
         pos.x = pos.right;
         pos.y = pos.bottom;
     }
-    if (trayBounds.x > t && trayBounds.y < t) {
+    else if (screen.width - trayBounds.x < t ) {
         console.log("Tray is right");
         pos.x = pos.right;
         pos.y = pos.bottom;
-    }
-    if (trayBounds.x > t && trayBounds.y < t) {
-        console.log("Tray is top");
+    } else  {
+        console.log("Could not dedect Tray location!");
         pos.x = pos.right;
-        pos.y = pos.top;
+        pos.y = pos.bottom;
     }
+
     console.log("Window position:" +  JSON.stringify(pos));
 
     return {x: pos.x, y: pos.y, width: pos.width, height: pos.height};
 }
+
 function createTray() {
     tray = new Tray(`${__dirname}/resources/electorn-logo.png`);
     tray.on('right-click', toggleWindow);
@@ -80,19 +85,21 @@ function createWindow () {
         height: mainWindowPos.height,
         x: mainWindowPos.x,
         y: mainWindowPos.y,
-        show: false,
-        frame: false,
-        fullscreenable: false,
-        resizable: false,
-        transparent: false
+        show: true,
+        frame: true,
+        //fullscreenable: false,
+        //resizable: false,
+        //transparent: false
         //center: true
         //acceptFirstMouse: true
     });
 
+
+    /*
     console.log("BrowserWindow Position:" +  mainWindow.getPosition());
     console.log("BrowserWindow WindowSize:" +  mainWindow.getSize());
     console.log("BrowserWindow ContentSize:" +  mainWindow.getContentSize());
-
+    */
 
     // and load the index.html of the app
     mainWindow.loadURL(`file://${__dirname}/app/index.html`);
@@ -115,7 +122,8 @@ function toggleWindow() {
 }
 
 function showWindow() {
-    mainWindow.setPosition(mainWindowPos.x, mainWindowPos.y, false);
+    let position = calculateWindowPosition(800, 600, tray);
+    mainWindow.setPosition(position.x, position.y, false);
     mainWindow.show();
     mainWindow.focus();
 }
