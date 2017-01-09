@@ -87,13 +87,17 @@ function createWindow () {
         y: mainWindowPos.y,
         show: true,
         frame: true,
-        //fullscreenable: false,
-        //resizable: false,
-        //transparent: false
-        //center: true
+        fullscreenable: false,
+        resizable: false,
+        skipTaskbar: true
+
         //acceptFirstMouse: true
     });
 
+
+    mainWindow.on('blur', () => {
+        mainWindow.hide();
+    });
 
     /*
     console.log("BrowserWindow Position:" +  mainWindow.getPosition());
